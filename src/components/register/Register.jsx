@@ -6,6 +6,11 @@ import Button from 'react-bootstrap/Button'
 import { Container } from "react-bootstrap";
 
 function Register() {
+
+  const handleSignUp = (e) => {
+    e.preventDefault();
+  }
+
   return (
     <Container className="p-5 "  >
             <Row className="justify-content-center">
@@ -14,7 +19,7 @@ function Register() {
                 <Link to={"/login"}>
                     <p className="text-center">Have an account? </p>
                 </Link>
-                <Form>
+                <Form onSubmit={handleSignUp}>
                     <Form.Group
                         className="mb-3"
                         controlId="username"
@@ -36,7 +41,7 @@ function Register() {
                         <Form.Label className="text-start ms-0">Password</Form.Label>
                         <Form.Control type="password" rows={3} />
                     </Form.Group>
-                    <Button>
+                    <Button type="submit">
                       Sign up
                     </Button>
                 </Form>
