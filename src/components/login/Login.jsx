@@ -6,13 +6,19 @@ import Button from "react-bootstrap/Button";
 import { Container } from "react-bootstrap";
 
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 import { BASE_URL } from "src/constants";
+import { AuthContext } from "src/context";
 
 function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [inValid, setInValid] = useState(false);
+  const {setCurrentUser} = useContext(AuthContext)
+
   const handleLogin = (e) => {
     e.preventDefault();
     axios.post(`${BASE_URL}/users/login`, {
@@ -25,10 +31,13 @@ function Login() {
       const { user } = res.data;
       if (user && user.token) {
         localStorage.setItem("user", JSON.stringify(user));
+        console.log(setCurrentUser);
+        setCurrentUser(user)
       }
+      navigate('/')
     })
-    .catch(err => {
-      console.log(err);
+    .catch(() => {
+      setInValid(true)
     })
   };
 
@@ -43,12 +52,13 @@ function Login() {
           <Form onSubmit={handleLogin}>
             <Form.Group className="mb-3" controlId="email">
               <Form.Label className="text-start">Email</Form.Label>
-              <Form.Control value={email} onChange={(e) => setEmail(e.target.value)} type="email" />
+              <Form.Control value={email} onChange={(e) => setEmail(e.target.value)} type="email" required />
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label className="text-start ms-0">Password</Form.Label>
-              <Form.Control value={password} onChange={(e) => setPassword(e.target.value)} type="password" rows={3} />
+              <Form.Control value={password} onChange={(e) => setPassword(e.target.value)} type="password" rows={3} required />
             </Form.Group>
+            <p className="text-danger">{ inValid && 'Email or password is invalid'}</p>
             <Button type="submit">Login</Button>
           </Form>
         </Col>
