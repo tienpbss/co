@@ -29,8 +29,6 @@ function Register() {
         },
       })
       .then((res) => {
-        console.log("ok");
-        console.log(res.data);
         const { user } = res.data;
         if (user && user.token) {
           localStorage.setItem("user", JSON.stringify(user));
@@ -40,8 +38,6 @@ function Register() {
         navigate("/");
       })
       .catch((err) => {
-        console.log("have err");
-        console.log(err);
         const listErr = err.response ? err.response.data.body : [];
         console.log(length);
         setErrors(listErr.map((e) => (e.startsWith("user.") ? e.slice(5) : e)));
