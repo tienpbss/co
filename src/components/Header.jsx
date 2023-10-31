@@ -10,9 +10,9 @@ import { AuthContext } from "src/context";
 function Header() {
   const { currentUser } = useContext(AuthContext);
   return (
-    <Navbar expand="md" className="bg-body-tertiary">
+    <Navbar expand="md" className="bg-body-tertiary" fixed="top">
       <Container fluid="md">
-        <Navbar.Brand href="#home">Conduit</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/">Conduit</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
@@ -21,16 +21,16 @@ function Header() {
             </Nav.Link>
             {currentUser ? (
               <>
-                <Nav.Link as={Link} to="/login">
+                <Nav.Link as={Link} to="/editor">
                   <i className="bi bi-pencil-square"></i>
                   <span className="ms-1">New Article</span>
                 </Nav.Link>
-                <Nav.Link as={Link} to="/register">
+                <Nav.Link as={Link} to="/settings">
                   <i className="bi bi-gear-fill"></i>
                   <span className="ms-1">Settings</span>
                 </Nav.Link>
-                <Nav.Link as={Link} to="/register">
-                  <Image src={currentUser.image} width={30} roundedCircle />
+                <Nav.Link as={Link} to={`/profile/${currentUser.username}`}>
+                  { currentUser.image && <Image src={currentUser.image} width={20} roundedCircle />}
                   <span className="ms-1">{currentUser.username}</span>
                 </Nav.Link>
               </>

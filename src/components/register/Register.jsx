@@ -7,7 +7,7 @@ import { Container } from "react-bootstrap";
 import { useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "src/constants";
+import { BASE_URL, defaultImg } from "src/constants";
 import { AuthContext } from "src/context";
 
 function Register() {
@@ -30,6 +30,7 @@ function Register() {
       })
       .then((res) => {
         const { user } = res.data;
+        if (user.image) user.image = defaultImg
         if (user && user.token) {
           localStorage.setItem("user", JSON.stringify(user));
           setCurrentUser(user);
@@ -39,7 +40,6 @@ function Register() {
       })
       .catch((err) => {
         const listErr = err.response ? err.response.data.body : [];
-        console.log(length);
         setErrors(listErr.map((e) => (e.startsWith("user.") ? e.slice(5) : e)));
       });
   };

@@ -9,7 +9,7 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
-import { BASE_URL } from "src/constants";
+import { BASE_URL, defaultImg } from "src/constants";
 import { AuthContext } from "src/context";
 
 function Login() {
@@ -29,9 +29,9 @@ function Login() {
     })
     .then(res => {
       const { user } = res.data;
+      if (!user.image) user.image = defaultImg
       if (user && user.token) {
         localStorage.setItem("user", JSON.stringify(user));
-        console.log(setCurrentUser);
         setCurrentUser(user)
       }
       navigate('/')

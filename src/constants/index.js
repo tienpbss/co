@@ -1,1 +1,1 @@
-export { BASE_URL } from './constants';
+export { BASE_URL, defaultImg } from './constants';
