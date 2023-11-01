@@ -11,7 +11,8 @@ import {
   Settings,
 } from "./components";
 
-import './App.css'
+import "./App.css";
+import { ProtectedRouter } from "./common";
 
 function App() {
   return (
@@ -19,14 +20,20 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/editor" element={<Editor />} />
-        <Route path="/editor/:slug" element={<Editor />} />
+
         <Route path="/article/:slug" element={<Article />} />
         <Route path="/profile/:username" element={<Profile />} />
         <Route path="/profile/:username/favorites" element={<Profile />} />
+
+        <Route element={<ProtectedRouter forLogged={false} />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
+        <Route element={<ProtectedRouter forLogged={true} />} >
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/editor" element={<Editor />} />
+          <Route path="/editor/:slug" element={<Editor />} />
+        </Route>
       </Routes>
       <Footer />
     </BrowserRouter>
