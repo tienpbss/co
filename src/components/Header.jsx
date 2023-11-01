@@ -11,7 +11,7 @@ function Header() {
   const { currentUser } = useContext(AuthContext);
   return (
     <Navbar expand="md" className="bg-body-tertiary" fixed="top">
-      <Container fluid="md">
+      <Container fluid="md px-5">
         <Navbar.Brand as={Link} to="/">Conduit</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">

@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import AuthorArticle from "../article/AuthorArticle";
+import ListTagOfArticle from "./ListTagOfArticle";
 
 function ArticlePreview({ article }) {
-  console.log(article);
   const {
     author,
     createAt,
@@ -42,19 +42,7 @@ function ArticlePreview({ article }) {
           <span className="fw-lighter" style={{ fontSize: "12px" }}>
             Read more...
           </span>
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
-            {tagList.map((t, i) => {
-              return (
-                <span
-                  key={i}
-                  className="m-1 p-1 border text-secondary"
-                  style={{ borderRadius: "10px", fontSize: "10px" }}
-                >
-                  {t}
-                </span>
-              );
-            })}
-          </div>
+          <ListTagOfArticle tagList={tagList} />
         </div>
       </Link>
     </div>
