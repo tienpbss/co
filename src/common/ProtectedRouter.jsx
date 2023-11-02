@@ -3,7 +3,6 @@ import { Outlet, Navigate } from "react-router-dom";
 import { AuthContext } from "src/context";
 
 function ProtectedRouter({ forLogged }) {
-  console.log('go');
   const { currentUser } = useContext(AuthContext);
   if (forLogged) {
     return currentUser ? <Outlet /> : <Navigate to={"/login"} replace />;

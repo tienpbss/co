@@ -27,6 +27,7 @@ function Home() {
   }, []);
   const selectTagHandle = (t) => {
     setTagFilter(t);
+    setIsFeed(false)
     setTabActive('tag')
   };
   const selectFeed = () => {

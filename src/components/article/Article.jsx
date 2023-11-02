@@ -8,6 +8,7 @@ import { BASE_URL } from "src/constants";
 import AuthorArticle from "./AuthorArticle";
 import ListTagOfArticle from "../home/ListTagOfArticle";
 import Comment from "./Comment";
+import { OutlineButton } from "src/components/utils";
 
 function Article() {
   const { slug } = useParams();
@@ -36,11 +37,6 @@ function Article() {
   } = article;
   const { username = "" } = author;
 
-  const styleSmallButton = {
-    height: "30px",
-    fontSize: "15px",
-    lineHeight: "15px",
-  };
   return (
     <div>
       <section className="bg-dark bg-gradient text-light p-4">
@@ -49,21 +45,15 @@ function Article() {
           <div className="d-flex align-items-center">
             <AuthorArticle author={author} createAt={createAt} />
             <div className="ms-4">
-              <button
-                className="btn btn-outline-secondary mx-1"
-                style={styleSmallButton}
-              >
+              <OutlineButton >
                 {" "}
                 <i className="bi bi-plus-lg"></i> Follow {username}{" "}
-              </button>
-              <button
-                className="btn btn-outline-primary"
-                style={styleSmallButton}
-              >
+              </OutlineButton>
+              <OutlineButton outlineType={'primary'}>
                 {" "}
                 <i className="bi bi-heart-fill"></i> Favorite Article{" "}
                 {`(${favoritesCount})`}{" "}
-              </button>
+              </OutlineButton>
             </div>
           </div>
         </div>
@@ -81,21 +71,15 @@ function Article() {
           <div className="d-flex justify-content-center pt-3">
             <AuthorArticle author={author} createAt={createAt} />
             <div className="ms-4">
-              <button
-                className="btn btn-outline-secondary mx-1"
-                style={styleSmallButton}
-              >
+              <OutlineButton>
                 {" "}
                 <i className="bi bi-plus-lg"></i> Follow {username}{" "}
-              </button>
-              <button
-                className="btn btn-outline-primary"
-                style={styleSmallButton}
-              >
+              </OutlineButton>
+              <OutlineButton outlineType={'primary'}>
                 {" "}
                 <i className="bi bi-heart-fill"></i> Favorite Article{" "}
                 {`(${favoritesCount})`}{" "}
-              </button>
+              </OutlineButton>
             </div>
           </div>
           <Stack gap={2} className="col-md-6 mx-auto">

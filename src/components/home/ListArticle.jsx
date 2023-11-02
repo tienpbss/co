@@ -1,27 +1,35 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BASE_URL } from "src/constants";
 import ArticlePreview from "./ArticlePreview";
 import Pagination from "react-bootstrap/Pagination";
+import { AuthContext } from "src/context";
 
 function ListArticle({ isFeed, tag, author, favorited, limit = 10, offset = 0 }) {
   const [articles, setArticles] = useState([]);
   const [articlesCount, setArticlesCount] = useState(0);
   const [active, setActive] = useState(1)
 
+  const { currentUser } = useContext(AuthContext);
+
   const articlePerPage = 10;
   const pageCount = Math.ceil(articlesCount/articlePerPage);
+  console.log(`${BASE_URL}/articles${isFeed?'/feed':''}`);
 
   useEffect(() => {
     axios.get(`${BASE_URL}/articles${isFeed?'/feed':''}`, {
-      params: { tag, author, favorited, limit, offset }
+      params: { tag, author, favorited, limit, offset },
+      headers: {
+        Authorization: `Bearer ${currentUser && currentUser.token}`,
+      }
     })
     .then((res) => {
       const { data } = res;
+      console.log((data.articles));
       setArticles(data.articles);
       setArticlesCount(data.articlesCount)
     });
-  }, [isFeed, tag, author, favorited, limit, offset]);
+  }, [isFeed, tag, author, favorited, limit, offset, currentUser]);
 
   let items = [];
   for (let number = 1; number <= pageCount; number++) {

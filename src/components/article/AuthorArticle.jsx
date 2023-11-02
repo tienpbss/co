@@ -12,16 +12,18 @@ function AuthorArticle({ author, createAt }) {
   if (!author) return 'Loading...'
   return (
     <div className="d-flex">
-      <Image
-        className="me-2 my-auto d-block"
-        src={author.image || defaultImg}
-        width={25}
-        roundedCircle
-      />
+      <Link to={`/profile/${author.username}`}>
+        <Image
+          className="me-2 my-auto d-block"
+          src={author.image || defaultImg}
+          width={25}
+          roundedCircle
+        />
+      </Link>
       <div>
         <Link
           style={{ textDecoration: "none", color: 'inherit' }}
-          to={`profile/${author.username}`}
+          to={`/profile/${author.username}`}
         >
           {author.username}
         </Link>
