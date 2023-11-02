@@ -31,7 +31,6 @@ function Login() {
       const { user } = res.data;
       if (!user.image) user.image = defaultImg
       if (user && user.token) {
-        localStorage.setItem("user", JSON.stringify(user));
         setCurrentUser(user)
       }
       navigate('/')
