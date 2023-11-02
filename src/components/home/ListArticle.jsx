@@ -20,7 +20,7 @@ function ListArticle({ isFeed, tag, author, favorited, limit = 10, offset = 0 })
     axios.get(`${BASE_URL}/articles${isFeed?'/feed':''}`, {
       params: { tag, author, favorited, limit, offset },
       headers: {
-        Authorization: `Bearer ${currentUser && currentUser.token}`,
+        Authorization: currentUser?`Bearer ${currentUser.token}`: null ,
       }
     })
     .then((res) => {
