@@ -6,6 +6,7 @@ import { BASE_URL, defaultImg } from "src/constants";
 import Image from "react-bootstrap/Image";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
 
 import { OutlineButton } from "src/components/utils";
 import ListArticle from "../home/ListArticle";
@@ -47,30 +48,34 @@ function Profile() {
           </div>
         </div>
       </section>
-      <Container>
-        <Nav variant="tabs" defaultActiveKey={tabs.MY_ARTICLES}>
-          <Nav.Item>
-            <Nav.Link
-              onClick={() => setCurrentTab(tabs.MY_ARTICLES)}
-              eventKey={tabs.MY_ARTICLES}
-            >
-              My Articles
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              onClick={() => setCurrentTab(tabs.FAVORITED_ARTICLES)}
-              eventKey={tabs.FAVORITED_ARTICLES}
-            >
-              Favorited Articles
-            </Nav.Link>
-          </Nav.Item>
-        </Nav>
-        {currentTab == tabs.MY_ARTICLES ? (
-          <ListArticle isFeed={false} author={username} />
-        ) : (
-          <ListArticle isFeed={false} favorited={username} />
-        )}
+      <Container className="mt-5">
+        <Row className="justify-content-center">
+          <div style={{width: '960px'}}>
+            <Nav variant="tabs" defaultActiveKey={tabs.MY_ARTICLES}>
+              <Nav.Item>
+                <Nav.Link
+                  onClick={() => setCurrentTab(tabs.MY_ARTICLES)}
+                  eventKey={tabs.MY_ARTICLES}
+                >
+                  My Articles
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link
+                  onClick={() => setCurrentTab(tabs.FAVORITED_ARTICLES)}
+                  eventKey={tabs.FAVORITED_ARTICLES}
+                >
+                  Favorited Articles
+                </Nav.Link>
+              </Nav.Item>
+            </Nav>
+            {currentTab == tabs.MY_ARTICLES ? (
+              <ListArticle isFeed={false} author={username} />
+            ) : (
+              <ListArticle isFeed={false} favorited={username} />
+            )}
+          </div>
+        </Row>
       </Container>
     </div>
   );
