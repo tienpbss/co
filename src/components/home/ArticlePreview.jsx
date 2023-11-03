@@ -14,7 +14,7 @@ function ArticlePreview({ article }) {
     tagList,
     slug,
   } = article;
-
+  console.log(author);
 
   return (
     <div className="border-top py-3">

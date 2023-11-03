@@ -8,3 +8,6 @@ export { default as Article } from './article/Article'
 
 export { default as Header } from './Header';
 export { default as Footer } from './Footer';
+export { default as Avatar } from './Avatar';
+export { default as OutlineButton } from './OutlineButton';
+export { default as AuthorAndButton } from './AuthorAndButton';

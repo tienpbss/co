@@ -1,15 +1,17 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { BASE_URL, defaultImg } from "src/constants";
+import { useContext, useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { BASE_URL } from "src/constants";
 
-import Image from "react-bootstrap/Image";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 
-import { OutlineButton } from "src/components/utils";
+import { OutlineButton } from "src/components";
 import ListArticle from "../home/ListArticle";
+import { AuthContext } from "src/context";
+import { Avatar } from "src/components";
+import { followProfile, unFollowProfile } from "src/utils";
 
 const tabs = {
   MY_ARTICLES: "my-articles",
@@ -17,7 +19,10 @@ const tabs = {
 };
 
 function Profile() {
+  const navigate = useNavigate();
   const { username } = useParams();
+  const { currentUser } = useContext(AuthContext);
+  const user = currentUser ? currentUser : {};
   const [profile, setProfile] = useState({});
   const [currentTab, setCurrentTab] = useState(tabs.MY_ARTICLES);
   useEffect(() => {
@@ -28,7 +33,26 @@ function Profile() {
       setProfile(profileFromApi);
     });
   }, [username]);
-  const { image } = profile;
+  const { image, following } = profile;
+
+  const navigateToEditProfile = () => {
+    console.log("click");
+    navigate("/settings");
+  };
+
+  const unFollow = async () => {
+    const p = await unFollowProfile(username);
+    
+    setProfile(p);
+  };
+
+  const follow = () => {
+    console.log('follow');
+    followProfile(username).then(p => {
+      console.log('set');
+      setProfile(p)
+    })
+  };
   return (
     <div>
       <section
@@ -37,20 +61,36 @@ function Profile() {
       >
         <div className="container" style={{ maxWidth: "1200px" }}>
           <div className="px-5">
-            <Image src={image || defaultImg} width={100} roundedCircle />
-            <h2>{username}</h2>
+            <Avatar url={image} width={100} />
+            <h2 className="mt-2">{username}</h2>
             <div className="d-flex justify-content-end px-5">
-              <OutlineButton>
-                {" "}
-                <i className="bi bi-plus-lg"></i> Follow {username}{" "}
-              </OutlineButton>
+              {username === user.username ? (
+                <OutlineButton clickButton={navigateToEditProfile}>
+                  <i className="bi bi-gear-fill me-1"></i>
+                  <span>Edit Profile Settings</span>
+                </OutlineButton>
+              ) : (
+                <>
+                  {following ? (
+                    <OutlineButton clickButton={unFollow}>
+                      <i className="bi bi-plus-lg"></i>{" "}
+                      <span>Unfollow {username}</span>
+                    </OutlineButton>
+                  ) : (
+                    <OutlineButton clickButton={follow}>
+                      <i className="bi bi-plus-lg"></i>{" "}
+                      <span>Follow {username}</span>
+                    </OutlineButton>
+                  )}
+                </>
+              )}
             </div>
           </div>
         </div>
       </section>
       <Container className="mt-5">
         <Row className="justify-content-center">
-          <div style={{width: '960px'}}>
+          <div style={{ width: "960px" }}>
             <Nav variant="tabs" defaultActiveKey={tabs.MY_ARTICLES}>
               <Nav.Item>
                 <Nav.Link

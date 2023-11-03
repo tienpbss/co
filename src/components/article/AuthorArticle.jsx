@@ -1,9 +1,9 @@
-import Image from "react-bootstrap/Image";
+import classNames from "classnames";
 import { Link } from "react-router-dom";
 
-import { defaultImg } from "src/constants";
+import { Avatar } from "src/components";
 
-function AuthorArticle({ author, createAt }) {
+function AuthorArticle({ author, createAt, horizontal = false }) {
   const formatDate = (date) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(date).toLocaleDateString(undefined, options);
@@ -13,15 +13,13 @@ function AuthorArticle({ author, createAt }) {
   return (
     <div className="d-flex">
       <Link to={`/profile/${author.username}`}>
-        <Image
-          className="me-2 my-auto d-block"
-          src={author.image || defaultImg}
-          width={25}
-          roundedCircle
-        />
+        <div className="me-2 my-auto d-block">
+          <Avatar url={author.image} />
+        </div>
       </Link>
-      <div>
+      <div className={classNames({'d-flex': horizontal}, ' align-items-center')}>
         <Link
+          className="me-2"
           style={{ textDecoration: "none", color: 'inherit' }}
           to={`/profile/${author.username}`}
         >

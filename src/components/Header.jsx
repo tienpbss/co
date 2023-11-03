@@ -2,10 +2,10 @@ import { useContext } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import Image from "react-bootstrap/Image";
 import { Link } from "react-router-dom";
 
 import { AuthContext } from "src/context";
+import { Avatar } from "src/components";
 
 function Header() {
   const { currentUser } = useContext(AuthContext);
@@ -30,7 +30,7 @@ function Header() {
                   <span className="ms-1">Settings</span>
                 </Nav.Link>
                 <Nav.Link as={Link} to={`/profile/${currentUser.username}`}>
-                  { currentUser.image && <Image src={currentUser.image} width={20} roundedCircle />}
+                  { currentUser.image && <Avatar url={currentUser.image} />}
                   <span className="ms-1">{currentUser.username}</span>
                 </Nav.Link>
               </>

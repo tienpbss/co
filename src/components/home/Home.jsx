@@ -67,7 +67,7 @@ function Home() {
           <Col md={3}>
             <Card style={{ width: "18rem" }}>
               <Card.Body>
-                <Card.Title> Popular tags </Card.Title>
+                <Card.Title> Global tags </Card.Title>
 
                 <div style={{ display: "flex", flexWrap: "wrap" }}>
                   {tags.map((t, i) => {

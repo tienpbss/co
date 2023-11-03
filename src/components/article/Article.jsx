@@ -1,19 +1,45 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 
 import Stack from "react-bootstrap/Stack";
+import Card from "react-bootstrap/Card";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 
 import { BASE_URL } from "src/constants";
-import AuthorArticle from "./AuthorArticle";
 import ListTagOfArticle from "../home/ListTagOfArticle";
 import Comment from "./Comment";
-import { OutlineButton } from "src/components/utils";
+import { AuthorAndButton } from "src/components";
+import { AuthContext } from "src/context";
+
+import { Avatar } from "src/components";
+import {
+  deleteArticle,
+  favoriteArticle,
+  unFavoriteArticle,
+  followProfile,
+  unFollowProfile,
+} from "src/utils";
 
 function Article() {
+  const navigate = useNavigate();
   const { slug } = useParams();
   const [article, setArticle] = useState({});
-  const [comments, setComments] = useState(["Place holder"]);
+  const [comments, setComments] = useState([]);
+  const [comment, setComment] = useState("");
+  const {
+    title,
+    author = {},
+    createAt,
+    favoritesCount,
+    body,
+    tagList = [],
+    favorited
+  } = article;
+  console.log(article);
+
+  const { currentUser } = useContext(AuthContext);
   useEffect(() => {
     axios.get(`${BASE_URL}/articles/${slug}`).then((res) => {
       const { article: articleFromApi } = res.data;
@@ -27,35 +53,94 @@ function Article() {
       setComments(commentsFromApi);
     });
   }, [slug]);
-  const {
-    title,
-    author = {},
-    createAt,
-    favoritesCount,
-    body,
-    tagList = [],
-  } = article;
-  const { username = "" } = author;
+
+  const createComment = (e) => {
+    e.preventDefault();
+    console.log("create");
+    axios
+      .post(`${BASE_URL}/articles/${slug}/comments`, {
+        comment: {
+          body: comment,
+        },
+      })
+      .then((res) => {
+        const { data } = res;
+        const { comment: commentFromApi } = data;
+        console.log(commentFromApi);
+        setComments((comments) => [commentFromApi, ...comments]);
+        setComment("");
+      });
+  };
+
+  const deleteComment = (id) => {
+    axios.delete(`${BASE_URL}/articles/${slug}/comments/${id}`).then(() => {
+      setComments((comments) => comments.filter((x) => x.id != id));
+    });
+  };
+
+  const favorite = () => {
+    if (!currentUser) navigate("/login");
+    else {
+      favoriteArticle(slug).then((a) => {
+        setArticle(a);
+      });
+    }
+  };
+
+  const unFavorite = () => {
+    if (!currentUser) navigate("/login");
+    else {
+      unFavoriteArticle(slug).then((a) => {
+        setArticle(a);
+      });
+    }
+  };
+
+  const deleteAr = () => {
+    if (!currentUser) navigate("/login");
+    else {
+      deleteArticle(slug).then(() => {
+        navigate("/");
+      });
+    }
+  };
+
+  const unFollow = async () => {
+    const p = await unFollowProfile(author.username);
+    setArticle((a) => ({ ...a, author: p }));
+  };
+
+  const follow = () => {
+    console.log("follow");
+    followProfile(author.username).then((p) => {
+      console.log("set");
+      setArticle((a) => ({ ...a, author: p }));
+    });
+  };
+
+  let AuthorAndButtonWithProp = () => {
+    return (
+      <AuthorAndButton
+        author={author}
+        createAt={createAt}
+        favoritesCount={favoritesCount}
+        slug={slug}
+        favorited={favorited}
+        deleteArticle={deleteAr}
+        favorite={favorite}
+        unFavorite={unFavorite}
+        follow={follow}
+        unFollow={unFollow}
+      />
+    );
+  };
 
   return (
     <div>
       <section className="bg-dark bg-gradient text-light p-4">
         <div className="container">
           <h1>{title}</h1>
-          <div className="d-flex align-items-center">
-            <AuthorArticle author={author} createAt={createAt} />
-            <div className="ms-4">
-              <OutlineButton >
-                {" "}
-                <i className="bi bi-plus-lg"></i> Follow {username}{" "}
-              </OutlineButton>
-              <OutlineButton outlineType={'primary'}>
-                {" "}
-                <i className="bi bi-heart-fill"></i> Favorite Article{" "}
-                {`(${favoritesCount})`}{" "}
-              </OutlineButton>
-            </div>
-          </div>
+          <AuthorAndButtonWithProp />
         </div>
       </section>
       <section className="">
@@ -68,28 +153,43 @@ function Article() {
       </section>
       <section>
         <div className="container">
-          <div className="d-flex justify-content-center pt-3">
-            <AuthorArticle author={author} createAt={createAt} />
-            <div className="ms-4">
-              <OutlineButton>
-                {" "}
-                <i className="bi bi-plus-lg"></i> Follow {username}{" "}
-              </OutlineButton>
-              <OutlineButton outlineType={'primary'}>
-                {" "}
-                <i className="bi bi-heart-fill"></i> Favorite Article{" "}
-                {`(${favoritesCount})`}{" "}
-              </OutlineButton>
-            </div>
+          <div className="d-flex justify-content-center my-3">
+            <AuthorAndButtonWithProp />
           </div>
           <Stack gap={2} className="col-md-6 mx-auto">
-            <p className="mt-5 mb-3 text-center">
-              <Link to={"/login"}>Sign in</Link> or{" "}
-              <Link to={"/register"}>sign up</Link> to add comments on this
-              article.{" "}
-            </p>
+            {currentUser ? (
+              <Form onSubmit={createComment}>
+                <Card className="text-start ">
+                  <Card.Body className="p-0 pt-2">
+                    <Form.Control
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      as="textarea"
+                      rows={3}
+                      className="border-0 shadow-none"
+                      placeholder="Write a comment..."
+                    />
+                  </Card.Body>
+                  <Card.Footer className="text-muted">
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div>
+                        <Avatar url={currentUser.image} />
+                      </div>
+                      <Button type="submit">Post Comment</Button>
+                    </div>
+                  </Card.Footer>
+                </Card>
+              </Form>
+            ) : (
+              <p className="mt-5 mb-3 text-center">
+                <Link to={"/login"}>Sign in</Link> or{" "}
+                <Link to={"/register"}>sign up</Link> to add comments on this
+                article.{" "}
+              </p>
+            )}
+
             {comments.map((c, i) => (
-              <Comment key={i} comment={c} />
+              <Comment key={i} comment={c} clickDeleteComment={deleteComment} />
             ))}
           </Stack>
         </div>

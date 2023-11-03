@@ -25,7 +25,6 @@ function ListArticle({ isFeed, tag, author, favorited, limit = 10, offset = 0 })
     })
     .then((res) => {
       const { data } = res;
-      console.log((data.articles));
       setArticles(data.articles);
       setArticlesCount(data.articlesCount)
     });
