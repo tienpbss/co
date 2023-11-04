@@ -35,7 +35,7 @@ function Article() {
     favoritesCount,
     body,
     tagList = [],
-    favorited
+    favorited,
   } = article;
   console.log(article);
 
@@ -106,16 +106,22 @@ function Article() {
   };
 
   const unFollow = async () => {
-    const p = await unFollowProfile(author.username);
-    setArticle((a) => ({ ...a, author: p }));
+    if (!currentUser) navigate("/login");
+    else {
+      const p = await unFollowProfile(author.username);
+      setArticle((a) => ({ ...a, author: p }));
+    }
   };
 
   const follow = () => {
     console.log("follow");
-    followProfile(author.username).then((p) => {
-      console.log("set");
-      setArticle((a) => ({ ...a, author: p }));
-    });
+    if (!currentUser) navigate("/login");
+    else {
+      followProfile(author.username).then((p) => {
+        console.log("set");
+        setArticle((a) => ({ ...a, author: p }));
+      });
+    }
   };
 
   let AuthorAndButtonWithProp = () => {

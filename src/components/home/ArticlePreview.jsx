@@ -3,7 +3,13 @@ import { Link } from "react-router-dom";
 import AuthorArticle from "../article/AuthorArticle";
 import ListTagOfArticle from "./ListTagOfArticle";
 
-function ArticlePreview({ article }) {
+const defaultFunction = () => {};
+
+function ArticlePreview({
+  article,
+  favorite = defaultFunction,
+  unFavorite = defaultFunction,
+}) {
   const {
     author,
     createAt,
@@ -25,6 +31,7 @@ function ArticlePreview({ article }) {
             active: favorited,
           })}
           style={{ fontSize: "12px" }}
+          onClick={() => (favorited ? unFavorite(slug) : favorite(slug))}
         >
           <i className="bi bi-heart-fill"></i>
           <span className="mx-1">{favoritesCount}</span>
