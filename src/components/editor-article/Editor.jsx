@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Container from "react-bootstrap/Container";
@@ -9,7 +9,6 @@ import Button from "react-bootstrap/Button";
 import Toast from "react-bootstrap/Toast";
 import ToastContainer from "react-bootstrap/ToastContainer";
 
-import { AuthContext } from "src/context";
 import axios from "axios";
 import { BASE_URL } from "src/constants";
 
@@ -18,58 +17,47 @@ function Editor() {
 
   const { slug } = useParams();
 
-  const {
-    currentUser: { token },
-  } = useContext(AuthContext);
-
   const [article, setArticle] = useState({
-    title: '',
-    description: '',
-    body: '',
-    tags: '',
+    title: "",
+    description: "",
+    body: "",
+    tags: "",
   });
 
   const changeDetail = (prop) => {
-    setArticle(a => ({ ...a, ...prop }))
-  }
+    setArticle((a) => ({ ...a, ...prop }));
+  };
 
   const [errors, setErrors] = useState([]);
 
-
   useEffect(() => {
     if (slug) {
-      axios
-        .get(`${BASE_URL}/articles/${slug}`)
-        .then((res) => {
-          const data = res.data;
-          const { article } = data;
-          setArticle({article})
-        });
+      axios.get(`${BASE_URL}/articles/${slug}`).then((res) => {
+        const data = res.data;
+        const { article } = data;
+        setArticle(a => ({ ...a, ...article }));
+      });
     }
   }, [slug]);
 
-  const handleNewArticle = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const tagList = article.tags
       .trim()
       .split(/\s+/)
       .filter((t) => t);
     const articleSubmit = {
-      ...article, tagList
+      ...article,
+      tagList,
     };
-    axios
-      .post(
-        `${BASE_URL}/articles`,
-        {
+
+    axios({
+        method: slug?'put':'post',
+        url: `${BASE_URL}/articles/${slug??''}`,
+        data: {
           article: articleSubmit,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         }
-      )
-      .then((res) => {
+      }).then((res) => {
         const data = res.data;
         const { article } = data;
         navigate(`/article/${article.slug}`);
@@ -107,7 +95,7 @@ function Editor() {
         <Row className="justify-content-center">
           <Col sm={6}>
             <h1 className="text-center">New Article</h1>
-            <Form onSubmit={handleNewArticle}>
+            <Form onSubmit={handleSubmit}>
               <Form.Group className="mb-3" controlId="title">
                 <Form.Label className="text-start">Title</Form.Label>
                 <Form.Control
@@ -122,7 +110,9 @@ function Editor() {
                 <Form.Label className="text-start">Description</Form.Label>
                 <Form.Control
                   value={article.description}
-                  onChange={(e) => changeDetail({ description: e.target.value })}
+                  onChange={(e) =>
+                    changeDetail({ description: e.target.value })
+                  }
                   placeholder="What 's this article about?"
                   type="text"
                   required
@@ -135,9 +125,9 @@ function Editor() {
                   onChange={(e) => changeDetail({ body: e.target.value })}
                   as="textarea"
                   rows={10}
-                  style={{ 'white-space': 'pre-line' }}
-                  placeholder="Write your article"
+                  placeholder="Write your article (in markdown)"
                 />
+                
               </Form.Group>
               <Form.Group className="mb-3" controlId="tags">
                 <Form.Label className="text-start">Tags</Form.Label>
@@ -149,7 +139,7 @@ function Editor() {
                 />
               </Form.Group>
               <Button className="float-end" type="submit">
-                Publish Article
+                {slug?'Update':'Publish'} Article
               </Button>
             </Form>
           </Col>

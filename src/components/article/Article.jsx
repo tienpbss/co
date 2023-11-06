@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import ReactMarkdown from 'react-markdown'
 
 import Stack from "react-bootstrap/Stack";
 import Card from "react-bootstrap/Card";
@@ -33,7 +34,7 @@ function Article() {
     author = {},
     createAt,
     favoritesCount,
-    body,
+    body = '',
     tagList = [],
     favorited,
   } = article;
@@ -151,9 +152,9 @@ function Article() {
       </section>
       <section className="">
         <div className="container border-bottom py-5">
-          <div>
-            <p>{body}</p>
-          </div>
+        <article className="result">
+          <ReactMarkdown>{body}</ReactMarkdown>
+        </article>
           <ListTagOfArticle tagList={tagList} />
         </div>
       </section>

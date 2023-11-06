@@ -59,7 +59,7 @@ function ListArticle({
 
   const changePage = (number) => {
     setActive(number);
-    setOffset(number*articlePerPage)
+    setOffset((number-1)*articlePerPage)
   };
 
   const favorite = (slug) => {
