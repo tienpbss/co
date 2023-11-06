@@ -135,6 +135,7 @@ function Editor() {
                   onChange={(e) => changeDetail({ body: e.target.value })}
                   as="textarea"
                   rows={10}
+                  style={{ 'white-space': 'pre-line' }}
                   placeholder="Write your article"
                 />
               </Form.Group>

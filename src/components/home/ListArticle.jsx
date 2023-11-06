@@ -7,31 +7,31 @@ import { AuthContext } from "src/context";
 import { useNavigate } from "react-router-dom";
 
 import { favoriteArticle, unFavoriteArticle } from "src/utils";
+const articlePerPage = 10;
 
 function ListArticle({
   isFeed,
   tag,
   author,
   favorited,
-  limit = 10,
-  offset = 0,
 }) {
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
   const [articles, setArticles] = useState([]);
   const [articlesCount, setArticlesCount] = useState(0);
   const [active, setActive] = useState(1);
+  const [offset, setOffset] = useState(0);
+  const [loading, setLoading] = useState(false)
 
   console.log(articles);
-
-  const articlePerPage = 10;
   const pageCount = Math.ceil(articlesCount / articlePerPage);
   console.log(`${BASE_URL}/articles${isFeed ? "/feed" : ""}`);
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(`${BASE_URL}/articles${isFeed ? "/feed" : ""}`, {
-        params: { tag, author, favorited, limit, offset },
+        params: { tag, author, favorited, limit: articlePerPage, offset },
         headers: {
           Authorization: currentUser ? `Bearer ${currentUser.token}` : null,
         },
@@ -40,8 +40,9 @@ function ListArticle({
         const { data } = res;
         setArticles(data.articles);
         setArticlesCount(data.articlesCount);
+        setLoading(false);
       });
-  }, [isFeed, tag, author, favorited, limit, offset, currentUser]);
+  }, [isFeed, tag, author, favorited, offset, currentUser]);
 
   let items = [];
   for (let number = 1; number <= pageCount; number++) {
@@ -58,6 +59,7 @@ function ListArticle({
 
   const changePage = (number) => {
     setActive(number);
+    setOffset(number*articlePerPage)
   };
 
   const favorite = (slug) => {
@@ -80,7 +82,9 @@ function ListArticle({
 
   return (
     <div>
-      {articles.map((a, i) => (
+      {loading? (<div className="mt-3"> Loading... </div>):''}
+      {!loading && !articles.length? (<div className="mt-3"> No articles are here... yet. </div>):''}
+      {articles && articles.map((a, i) => (
         <ArticlePreview
           article={a}
           key={i}

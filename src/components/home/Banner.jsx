@@ -1,8 +1,18 @@
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
+// import BackgroundImage from './background-home.jpg'
+
+const backgroundImageUrl = `/background-home.jpg`;
+
 function Banner() {
   return (
-    <section className="bg-primary text-center text-light">
+    <section
+      className="text-center text-light"
+      style={{
+        backgroundImage:
+          `url(${backgroundImageUrl})`,
+      }}
+    >
       <Container>
         <Row className="p-5">
           <h1 className="fw-bold">conduit</h1>
