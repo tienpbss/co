@@ -22,11 +22,19 @@ function Editor() {
     currentUser: { token },
   } = useContext(AuthContext);
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [body, setBody] = useState("");
-  const [tags, setTags] = useState("");
+  const [article, setArticle] = useState({
+    title: '',
+    description: '',
+    body: '',
+    tags: '',
+  });
+
+  const changeDetail = (prop) => {
+    setArticle(a => ({ ...a, ...prop }))
+  }
+
   const [errors, setErrors] = useState([]);
+
 
   useEffect(() => {
     if (slug) {
@@ -34,32 +42,26 @@ function Editor() {
         .get(`${BASE_URL}/articles/${slug}`)
         .then((res) => {
           const data = res.data;
-          const { article: {title, description, body, tagList} } = data;
-          setTitle(title);
-          setDescription(description);
-          setBody(body);
-          setTags(tagList.join(' '))
+          const { article } = data;
+          setArticle({article})
         });
     }
   }, [slug]);
 
   const handleNewArticle = (e) => {
     e.preventDefault();
-    const tagList = tags
+    const tagList = article.tags
       .trim()
       .split(/\s+/)
       .filter((t) => t);
-    const article = {
-      title,
-      description,
-      body,
-      tagList,
+    const articleSubmit = {
+      ...article, tagList
     };
     axios
       .post(
         `${BASE_URL}/articles`,
         {
-          article,
+          article: articleSubmit,
         },
         {
           headers: {
@@ -109,8 +111,8 @@ function Editor() {
               <Form.Group className="mb-3" controlId="title">
                 <Form.Label className="text-start">Title</Form.Label>
                 <Form.Control
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  value={article.title}
+                  onChange={(e) => changeDetail({ title: e.target.value })}
                   placeholder="Article Title"
                   type="text"
                   required
@@ -119,8 +121,8 @@ function Editor() {
               <Form.Group className="mb-3" controlId="description">
                 <Form.Label className="text-start">Description</Form.Label>
                 <Form.Control
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  value={article.description}
+                  onChange={(e) => changeDetail({ description: e.target.value })}
                   placeholder="What 's this article about?"
                   type="text"
                   required
@@ -129,8 +131,8 @@ function Editor() {
               <Form.Group className="mb-3" controlId="body">
                 <Form.Label className="text-start ms-0">Body</Form.Label>
                 <Form.Control
-                  value={body}
-                  onChange={(e) => setBody(e.target.value)}
+                  value={article.body}
+                  onChange={(e) => changeDetail({ body: e.target.value })}
                   as="textarea"
                   rows={10}
                   placeholder="Write your article"
@@ -139,8 +141,8 @@ function Editor() {
               <Form.Group className="mb-3" controlId="tags">
                 <Form.Label className="text-start">Tags</Form.Label>
                 <Form.Control
-                  value={tags}
-                  onChange={(e) => setTags(e.target.value)}
+                  value={article.tags}
+                  onChange={(e) => changeDetail({ tags: e.target.value })}
                   placeholder="Enter tags separate by '  '"
                   type="text"
                 />

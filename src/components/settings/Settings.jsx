@@ -1,51 +1,74 @@
-import { useContext, useState } from 'react';
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 
-import { AuthContext } from 'src/context';
-import axios from 'axios';
-import { BASE_URL } from 'src/constants';
+import { AuthContext } from "src/context";
+import axios from "axios";
+import { BASE_URL } from "src/constants";
+import { OutlineButton } from "..";
 
 function Settings() {
+  const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useContext(AuthContext);
-  const { image: oldImage, username: oldUsername, email: oldEmail, bio: oldBio, token} = currentUser;
+  const {
+    image: oldImage,
+    username: oldUsername,
+    email: oldEmail,
+    bio: oldBio,
+    token,
+  } = currentUser;
 
   const [image, setImage] = useState(oldImage);
   const [username, setUsername] = useState(oldUsername);
-  const [bio, setBio] = useState(oldBio??'');
+  const [bio, setBio] = useState(oldBio ?? "");
   const [email, setEmail] = useState(oldEmail);
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
 
   // const [errors, setErrors] = useState([]);
 
   const handleUpdateProfile = (e) => {
     e.preventDefault();
-    const newUser = Object.assign({}, 
-      image && {image},
-      username && {username},
-      bio && {bio},
-      email && {email},
-      password && {password}
+    const newUser = Object.assign(
+      {},
+      (image && currentUser.image != image) && { image },
+      (username && currentUser.username != username) && { username },
+      (bio && currentUser.bio != bio ) && { bio },
+      (email && currentUser.email != email ) && { email },
+      password && { password }
     );
 
-    console.log({user: newUser});
-    axios.put(`${BASE_URL}/user`, {
-      user: newUser
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    .then(res => {
-      const { data } = res;
-      const { user } = data;
-      setCurrentUser(user)
-    })
-  }
+    console.log({ user: newUser });
+    axios
+      .put(
+        `${BASE_URL}/user`,
+        {
+          user: newUser,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        const { data } = res;
+        const { user } = data;
+        setCurrentUser(user);
+        navigate(`/profile/${user.username}`)
+      });
+  };
+
+  const logout = () => {
+    setCurrentUser(null);
+    localStorage.removeItem("user");
+    navigate("/");
+  };
+
   return (
     <Container className="p-5 ">
       <Row className="justify-content-center">
@@ -57,7 +80,7 @@ function Settings() {
               <Form.Control
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
-                placeholder='Url of profile picture'
+                placeholder="Url of profile picture"
                 type="text"
                 required
               />
@@ -67,7 +90,7 @@ function Settings() {
               <Form.Control
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder='Your username'
+                placeholder="Your username"
                 type="text"
                 required
               />
@@ -78,7 +101,7 @@ function Settings() {
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
                 as="textarea"
-                placeholder='Short bio about you'
+                placeholder="Short bio about you"
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="email">
@@ -86,7 +109,7 @@ function Settings() {
               <Form.Control
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder='Your email'
+                placeholder="Your email"
                 type="text"
                 required
               />
@@ -96,7 +119,7 @@ function Settings() {
               <Form.Control
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder='Your password'
+                placeholder="Your password"
                 type="password"
               />
             </Form.Group>
@@ -108,12 +131,21 @@ function Settings() {
                   </p>
                 );
               })} */}
-            <Button className='float-end' type="submit">Update profile</Button>
+            <Button className="float-end" type="submit">
+              Update profile
+            </Button>
           </Form>
         </Col>
       </Row>
+      <Row className="justify-content-center">
+        <Col sm="6" className="border-top mt-3 p-0">
+            <div style={{ marginTop: '1rem', marginLeft: 0 , padding: 0 }}>
+              <OutlineButton clickButton={logout} outlineType={'danger'}>Or click here to logout</OutlineButton>
+            </div>
+        </Col>
+      </Row>
     </Container>
-  )
+  );
 }
 
 export default Settings;

@@ -8,7 +8,8 @@ function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(user);
   useEffect(() => {
     localStorage.setItem('user', JSON.stringify(currentUser))
-    if (currentUser) axios.defaults.headers.Authorization = `Bearer ${currentUser.token}`
+    if (currentUser) axios.defaults.headers.Authorization = `Bearer ${currentUser.token}`;
+    else axios.defaults.headers.Authorization = undefined;
   }, [currentUser])
   return (
     <AuthContext.Provider value={{ currentUser, setCurrentUser }}>

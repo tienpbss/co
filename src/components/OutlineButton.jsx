@@ -1,4 +1,4 @@
-function OutlineButton({ children, outlineType, clickButton }) {
+function OutlineButton({ children, outlineType, clickButton, style }) {
   const styleOutlineButton = {
     height: "30px",
     fontSize: "15px",
@@ -8,7 +8,7 @@ function OutlineButton({ children, outlineType, clickButton }) {
     <button
       onClick={clickButton}
       className={`btn btn-outline-${outlineType || "secondary"} mx-1`}
-      style={styleOutlineButton}
+      style={{...styleOutlineButton, ...style}}
     >
       {children}
     </button>
