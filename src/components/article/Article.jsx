@@ -31,6 +31,7 @@ function Article() {
   const [comment, setComment] = useState("");
   const {
     title,
+    description,
     author = {},
     createAt,
     favoritesCount,
@@ -148,6 +149,7 @@ function Article() {
         <div className="container">
           <h1>{title}</h1>
           <AuthorAndButtonWithProp />
+          <p className="fw-lighter my-3">{description}</p>
         </div>
       </section>
       <section className="">

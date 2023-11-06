@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Container from "react-bootstrap/Container";
@@ -23,6 +23,7 @@ function Editor() {
     body: "",
     tags: "",
   });
+  let originTitle = useRef(undefined);
 
   const changeDetail = (prop) => {
     setArticle((a) => ({ ...a, ...prop }));
@@ -35,7 +36,8 @@ function Editor() {
       axios.get(`${BASE_URL}/articles/${slug}`).then((res) => {
         const data = res.data;
         const { article } = data;
-        setArticle(a => ({ ...a, ...article }));
+        originTitle.current = article.title;
+        setArticle((a) => ({ ...a, ...article }));
       });
     }
   }, [slug]);
@@ -51,13 +53,16 @@ function Editor() {
       tagList,
     };
 
+    if (originTitle.current == articleSubmit.title) delete articleSubmit.title;
+    console.log(articleSubmit);
     axios({
-        method: slug?'put':'post',
-        url: `${BASE_URL}/articles/${slug??''}`,
-        data: {
-          article: articleSubmit,
-        }
-      }).then((res) => {
+      method: slug ? "put" : "post",
+      url: `${BASE_URL}/articles/${slug ?? ""}`,
+      data: {
+        article: articleSubmit,
+      },
+    })
+      .then((res) => {
         const data = res.data;
         const { article } = data;
         navigate(`/article/${article.slug}`);
@@ -127,7 +132,6 @@ function Editor() {
                   rows={10}
                   placeholder="Write your article (in markdown)"
                 />
-                
               </Form.Group>
               <Form.Group className="mb-3" controlId="tags">
                 <Form.Label className="text-start">Tags</Form.Label>
@@ -139,7 +143,7 @@ function Editor() {
                 />
               </Form.Group>
               <Button className="float-end" type="submit">
-                {slug?'Update':'Publish'} Article
+                {slug ? "Update" : "Publish"} Article
               </Button>
             </Form>
           </Col>
