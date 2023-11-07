@@ -42,7 +42,6 @@ function Settings() {
       password && { password }
     );
 
-    console.log({ user: newUser });
     axios
       .put(
         `${BASE_URL}/user`,

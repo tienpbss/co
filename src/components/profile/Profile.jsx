@@ -29,14 +29,12 @@ function Profile() {
     axios.get(`${BASE_URL}/profiles/${username}`).then((res) => {
       const data = res.data;
       const { profile: profileFromApi } = data;
-      console.log(profileFromApi);
       setProfile(profileFromApi);
     });
   }, [username]);
   const { image, following } = profile;
 
   const navigateToEditProfile = () => {
-    console.log("click");
     navigate("/settings");
   };
 
@@ -47,9 +45,7 @@ function Profile() {
   };
 
   const follow = () => {
-    console.log('follow');
     followProfile(username).then(p => {
-      console.log('set');
       setProfile(p)
     })
   };

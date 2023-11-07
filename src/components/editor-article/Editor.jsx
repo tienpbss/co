@@ -54,7 +54,6 @@ function Editor() {
     };
 
     if (originTitle.current == articleSubmit.title) delete articleSubmit.title;
-    console.log(articleSubmit);
     axios({
       method: slug ? "put" : "post",
       url: `${BASE_URL}/articles/${slug ?? ""}`,

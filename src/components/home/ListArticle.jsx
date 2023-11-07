@@ -23,9 +23,7 @@ function ListArticle({
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false)
 
-  console.log(articles);
   const pageCount = Math.ceil(articlesCount / articlePerPage);
-  console.log(`${BASE_URL}/articles${isFeed ? "/feed" : ""}`);
 
   useEffect(() => {
     setLoading(true);

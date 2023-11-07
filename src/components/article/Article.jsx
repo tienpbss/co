@@ -39,26 +39,22 @@ function Article() {
     tagList = [],
     favorited,
   } = article;
-  console.log(article);
 
   const { currentUser } = useContext(AuthContext);
   useEffect(() => {
     axios.get(`${BASE_URL}/articles/${slug}`).then((res) => {
       const { article: articleFromApi } = res.data;
-      console.log(articleFromApi);
       setArticle(articleFromApi);
     });
     axios.get(`${BASE_URL}/articles/${slug}/comments`).then((res) => {
       const { data } = res;
       const { comments: commentsFromApi } = data;
-      console.log(commentsFromApi);
       setComments(commentsFromApi);
     });
   }, [slug]);
 
   const createComment = (e) => {
     e.preventDefault();
-    console.log("create");
     axios
       .post(`${BASE_URL}/articles/${slug}/comments`, {
         comment: {
@@ -68,7 +64,6 @@ function Article() {
       .then((res) => {
         const { data } = res;
         const { comment: commentFromApi } = data;
-        console.log(commentFromApi);
         setComments((comments) => [commentFromApi, ...comments]);
         setComment("");
       });
@@ -116,11 +111,9 @@ function Article() {
   };
 
   const follow = () => {
-    console.log("follow");
     if (!currentUser) navigate("/login");
     else {
       followProfile(author.username).then((p) => {
-        console.log("set");
         setArticle((a) => ({ ...a, author: p }));
       });
     }
