@@ -137,7 +137,7 @@ function Article() {
   };
 
   return (
-    <div>
+    <div className="mb-5">
       <section className="bg-dark bg-gradient text-light p-4">
         <div className="container">
           <h1>{title}</h1>
