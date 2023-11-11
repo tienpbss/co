@@ -81,7 +81,6 @@ function Settings() {
                 onChange={(e) => setImage(e.target.value)}
                 placeholder="Url of profile picture"
                 type="text"
-                required
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="username">
