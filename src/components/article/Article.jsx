@@ -43,17 +43,23 @@ function Article() {
 
   const { currentUser } = useContext(AuthContext);
   useEffect(() => {
-    axios.get(`${BASE_URL}/articles/${slug}`).then(
-      (res) => {
-        const { article: articleFromApi } = res.data;
-        setArticle(articleFromApi);
-      },
-      {
+    axios
+      .get(`${BASE_URL}/articles/${slug}`, {
         headers: {
           Authorization: getAuthorizationHeader(currentUser),
         },
-      }
-    );
+      })
+      .then(
+        (res) => {
+          const { article: articleFromApi } = res.data;
+          setArticle(articleFromApi);
+        },
+        {
+          headers: {
+            Authorization: getAuthorizationHeader(currentUser),
+          },
+        }
+      );
     axios
       .get(`${BASE_URL}/articles/${slug}/comments`, {
         headers: {
