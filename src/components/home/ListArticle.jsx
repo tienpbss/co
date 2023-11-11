@@ -7,7 +7,7 @@ import { AuthContext } from "src/context";
 import { useNavigate } from "react-router-dom";
 
 import { favoriteArticle, unFavoriteArticle } from "src/utils";
-const articlePerPage = 10;
+const articlePerPage = 5;
 
 function ListArticle({
   isFeed,
@@ -81,7 +81,7 @@ function ListArticle({
   return (
     <div>
       {loading? (<div className="mt-3"> Loading... </div>):''}
-      {!loading && !articles.length? (<div className="mt-3"> No articles are here... yet. </div>):''}
+      {!loading && !articles.length? (<div className="mt-3"> No articles are here... yet. {isFeed && 'Follow someone to have your feed'} </div>):''}
       {articles && articles.map((a, i) => (
         <ArticlePreview
           article={a}
