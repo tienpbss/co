@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Container from "react-bootstrap/Container";
@@ -11,8 +11,12 @@ import ToastContainer from "react-bootstrap/ToastContainer";
 
 import axios from "axios";
 import { BASE_URL } from "src/constants";
+import { AuthContext } from "src/context";
+
+import { getAuthorizationHeader } from 'src/common';
 
 function Editor() {
+  const { currentUser } = useContext(AuthContext)
   const navigate = useNavigate();
 
   const { slug } = useParams();
@@ -33,14 +37,20 @@ function Editor() {
 
   useEffect(() => {
     if (slug) {
-      axios.get(`${BASE_URL}/articles/${slug}`).then((res) => {
-        const data = res.data;
-        const { article } = data;
-        originTitle.current = article.title;
-        setArticle((a) => ({ ...a, ...article }));
-      });
+      axios
+        .get(`${BASE_URL}/articles/${slug}`, {
+          headers: {
+            Authorization: getAuthorizationHeader(currentUser),
+          },
+        })
+        .then((res) => {
+          const data = res.data;
+          const { article } = data;
+          originTitle.current = article.title;
+          setArticle((a) => ({ ...a, ...article }));
+        });
     }
-  }, [slug]);
+  }, [currentUser, slug]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

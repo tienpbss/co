@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown from "react-markdown";
 
 import Stack from "react-bootstrap/Stack";
 import Card from "react-bootstrap/Card";
@@ -22,6 +22,7 @@ import {
   followProfile,
   unFollowProfile,
 } from "src/utils";
+import { getAuthorizationHeader } from "src/common";
 
 function Article() {
   const navigate = useNavigate();
@@ -35,23 +36,36 @@ function Article() {
     author = {},
     createAt,
     favoritesCount,
-    body = '',
+    body = "",
     tagList = [],
     favorited,
   } = article;
 
   const { currentUser } = useContext(AuthContext);
   useEffect(() => {
-    axios.get(`${BASE_URL}/articles/${slug}`).then((res) => {
-      const { article: articleFromApi } = res.data;
-      setArticle(articleFromApi);
-    });
-    axios.get(`${BASE_URL}/articles/${slug}/comments`).then((res) => {
-      const { data } = res;
-      const { comments: commentsFromApi } = data;
-      setComments(commentsFromApi);
-    });
-  }, [slug]);
+    axios.get(`${BASE_URL}/articles/${slug}`).then(
+      (res) => {
+        const { article: articleFromApi } = res.data;
+        setArticle(articleFromApi);
+      },
+      {
+        headers: {
+          Authorization: getAuthorizationHeader(currentUser),
+        },
+      }
+    );
+    axios
+      .get(`${BASE_URL}/articles/${slug}/comments`, {
+        headers: {
+          Authorization: getAuthorizationHeader(currentUser),
+        },
+      })
+      .then((res) => {
+        const { data } = res;
+        const { comments: commentsFromApi } = data;
+        setComments(commentsFromApi);
+      });
+  }, [currentUser, slug]);
 
   const createComment = (e) => {
     e.preventDefault();
@@ -70,9 +84,15 @@ function Article() {
   };
 
   const deleteComment = (id) => {
-    axios.delete(`${BASE_URL}/articles/${slug}/comments/${id}`).then(() => {
-      setComments((comments) => comments.filter((x) => x.id != id));
-    });
+    axios
+      .delete(`${BASE_URL}/articles/${slug}/comments/${id}`, {
+        headers: {
+          Authorization: getAuthorizationHeader(currentUser),
+        },
+      })
+      .then(() => {
+        setComments((comments) => comments.filter((x) => x.id != id));
+      });
   };
 
   const favorite = () => {
@@ -147,9 +167,9 @@ function Article() {
       </section>
       <section className="">
         <div className="container border-bottom py-5">
-        <article className="result">
-          <ReactMarkdown>{body}</ReactMarkdown>
-        </article>
+          <article className="result">
+            <ReactMarkdown>{body}</ReactMarkdown>
+          </article>
           <ListTagOfArticle tagList={tagList} />
         </div>
       </section>

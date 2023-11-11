@@ -12,6 +12,7 @@ import ListArticle from "../home/ListArticle";
 import { AuthContext } from "src/context";
 import { Avatar } from "src/components";
 import { followProfile, unFollowProfile } from "src/utils";
+import { getAuthorizationHeader } from "src/common"
 
 const tabs = {
   MY_ARTICLES: "my-articles",
@@ -26,12 +27,18 @@ function Profile() {
   const [profile, setProfile] = useState({});
   const [currentTab, setCurrentTab] = useState(tabs.MY_ARTICLES);
   useEffect(() => {
-    axios.get(`${BASE_URL}/profiles/${username}`).then((res) => {
-      const data = res.data;
-      const { profile: profileFromApi } = data;
-      setProfile(profileFromApi);
-    });
-  }, [username]);
+    axios
+      .get(`${BASE_URL}/profiles/${username}`, {
+        headers: {
+          Authorization: getAuthorizationHeader(currentUser),
+        },
+      })
+      .then((res) => {
+        const data = res.data;
+        const { profile: profileFromApi } = data;
+        setProfile(profileFromApi);
+      });
+  }, [currentUser, username]);
   const { image, following } = profile;
 
   const navigateToEditProfile = () => {
@@ -40,14 +47,14 @@ function Profile() {
 
   const unFollow = async () => {
     const p = await unFollowProfile(username);
-    
+
     setProfile(p);
   };
 
   const follow = () => {
-    followProfile(username).then(p => {
-      setProfile(p)
-    })
+    followProfile(username).then((p) => {
+      setProfile(p);
+    });
   };
   return (
     <div>
