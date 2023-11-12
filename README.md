@@ -1,8 +1,27 @@
-# React + Vite
+## About project 
+Frontend project conduit
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Technologies
+* [![React][React.js]][React-url]
+* [![Vite][Vite.js]][Vite-url]
 
-Currently, two official plugins are available:
+## Clone project 
+```bash
+$ git clone https://github.com/tienpbss/conduit-react-vite.git
+$ cd conduit-react-vite
+```
+## Installation and running the app
+1. Install dependiencies 
+```bash
+$ npm install
+```
+2. Running project
+```bash
+$ npm run dev
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://reactjs.org/
+
+[Vite.js]: https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white
+[Vite-url]: https://vitejs.dev/
